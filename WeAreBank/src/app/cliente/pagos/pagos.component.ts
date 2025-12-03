@@ -53,7 +53,7 @@ export class PagosComponent implements OnInit {
   montoPago: number = 0;
   referencia: string = '';
   mensaje = '';
-  
+
   // Para pagos de servicios
   servicios: Servicio[] = [
     { nombre: 'Agua', referencia: 'Agua', ultimoPago: 180 },
@@ -85,14 +85,14 @@ export class PagosComponent implements OnInit {
     }
 
     // 🔹 Cargar las cuentas del usuario logueado
-    this.http.get<Cuenta[]>(`http://localhost:3000/api/consultas/mis-cuentas/${usuario.id}`)
+    this.http.get<Cuenta[]>(`/api/consultas/mis-cuentas/${usuario.id}`)
       .subscribe({
         next: (data) => (this.cuentas = data),
         error: (err) => console.error(' Error al cargar cuentas:', err)
       });
 
     // 🔹 Cargar préstamos aprobados
-    this.http.get<Prestamo[]>(`http://localhost:3000/api/pagos/prestamos/${usuario.id}`)
+    this.http.get<Prestamo[]>(`/api/pagos/prestamos/${usuario.id}`)
       .subscribe({
         next: (data) => {
           this.prestamos = data;
@@ -135,7 +135,7 @@ export class PagosComponent implements OnInit {
 
   realizarPagoServicio(): void {
     // 🔽 Limpiar mensaje al iniciar la acción
-    this.mensaje = ''; 
+    this.mensaje = '';
     if (!this.idCuentaSeleccionada || this.montoPago <= 0) {
       this.mensaje = ' Selecciona una cuenta y un monto válido.';
       return;
@@ -147,7 +147,7 @@ export class PagosComponent implements OnInit {
       referencia: this.referencia || 'Pago de servicio'
     };
 
-    this.http.post('http://localhost:3000/api/pagos/servicio', pagoData).subscribe({
+    this.http.post('/api/pagos/servicio', pagoData).subscribe({
       next: (res: any) => {
         this.mensaje = res.message || ' Pago realizado con éxito.';
         // 🔽 Limpieza manual, sin borrar el 'this.mensaje'
@@ -176,7 +176,7 @@ export class PagosComponent implements OnInit {
       monto: this.montoPagoPrestamo
     };
 
-    this.http.post('http://localhost:3000/api/pagos/prestamo', pagoData).subscribe({
+    this.http.post('/api/pagos/prestamo', pagoData).subscribe({
       next: (res: any) => {
         this.mensaje = res.message || ' Pago de préstamo realizado con éxito.';
         // 🔽 Limpieza manual, sin borrar el 'this.mensaje'
@@ -193,10 +193,10 @@ export class PagosComponent implements OnInit {
 
   cargarHistorial(): void {
     const usuario = JSON.parse(safeLocalStorage().getItem('usuario') || 'null');
-    
+
     if (!usuario || !usuario.id) return;
 
-    this.http.get<HistorialPago[]>(`http://localhost:3000/api/pagos/historial/${usuario.id}`)
+    this.http.get<HistorialPago[]>(`/api/pagos/historial/${usuario.id}`)
       .subscribe({
         next: (data) => {
           this.historialPagos = data;

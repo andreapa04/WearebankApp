@@ -73,7 +73,7 @@ export class RegisterComponent {
       respuestaSeguridad: this.respuestaSeguridad
     };
 
-    this.http.post('http://localhost:3000/api/auth/register', datosRegistro)
+    this.http.post('/api/auth/register', datosRegistro)
       .subscribe({
         next: (res: any) => {
           alert(res.message || "Registro exitoso. Serás redirigido al login.");

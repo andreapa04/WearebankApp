@@ -43,16 +43,16 @@ export class ConsultasComponent implements OnInit {
   cuentas: Cuenta[] = [];
   tarjetas: Tarjeta[] = [];
   movimientos: Movimiento[] = [];
-  
+
   idCuentaSeleccionada: number | null = null;
   cuentaSeleccionada: Cuenta | null = null;
   tarjetaSeleccionada: Tarjeta | null = null; // Para el detalle de tarjeta
-  
+
   cargandoPDF: boolean = false;
-  
+
   // Propiedades para Cierre de Cuenta
   usuarioNombre: string = '';
-  idUsuario: number | null = null; 
+  idUsuario: number | null = null;
   cierreMensaje: string = '';
   cierreError: string = '';
 
@@ -65,8 +65,8 @@ export class ConsultasComponent implements OnInit {
       console.error('No se encontró usuario en sesión');
       return;
     }
-    
-    this.idUsuario = usuario.id; 
+
+    this.idUsuario = usuario.id;
     this.usuarioNombre = `${usuario.nombre || ''} ${usuario.apellidoP || ''}`;
 
     this.cargarCuentas(usuario.id);
@@ -75,7 +75,7 @@ export class ConsultasComponent implements OnInit {
 
   cargarCuentas(idUsuario: number): void {
     this.http
-      .get<Cuenta[]>(`http://localhost:3000/api/consultas/mis-cuentas/${idUsuario}`)
+      .get<Cuenta[]>(`/api/consultas/mis-cuentas/${idUsuario}`)
       .subscribe({
         next: (data) => {
           this.cuentas = data;
@@ -89,7 +89,7 @@ export class ConsultasComponent implements OnInit {
 
   cargarTarjetas(idUsuario: number): void {
     this.http
-      .get<Tarjeta[]>(`http://localhost:3000/api/consultas/mis-tarjetas/${idUsuario}`)
+      .get<Tarjeta[]>(`/api/consultas/mis-tarjetas/${idUsuario}`)
       .subscribe({
         next: (data) => this.tarjetas = data,
         error: (err) => console.error('Error al cargar tarjetas:', err)
@@ -123,7 +123,7 @@ export class ConsultasComponent implements OnInit {
     if (!idCuenta) return;
 
     this.http
-      .get<Movimiento[]>(`http://localhost:3000/api/consultas/movimientos/${idCuenta}`)
+      .get<Movimiento[]>(`/api/consultas/movimientos/${idCuenta}`)
       .subscribe({
         next: (data) => {
           this.movimientos = data.map((mov) => {
@@ -168,7 +168,7 @@ export class ConsultasComponent implements OnInit {
 
     this.http
       .get(
-        `http://localhost:3000/api/consultas/estado-cuenta-pdf/${this.cuentaSeleccionada.clabe}`,
+        `/api/consultas/estado-cuenta-pdf/${this.cuentaSeleccionada.clabe}`,
         { responseType: 'blob' }
       )
       .subscribe({
@@ -192,7 +192,7 @@ export class ConsultasComponent implements OnInit {
         error: (error: any) => {
           console.error('Error al descargar el PDF:', error);
           this.cargandoPDF = false;
-          
+
           if (error.status === 404) {
             alert('No se encontró la cuenta o no tiene movimientos');
           } else {
@@ -215,7 +215,7 @@ export class ConsultasComponent implements OnInit {
     this.cierreMensaje = 'Procesando...';
     this.cierreError = '';
 
-    this.http.post('http://localhost:3000/api/consultas/solicitar-cierre', { idUsuario: this.idUsuario })
+    this.http.post('/api/consultas/solicitar-cierre', { idUsuario: this.idUsuario })
       .subscribe({
         next: (res: any) => {
           this.cierreMensaje = res.message;

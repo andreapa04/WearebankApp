@@ -33,7 +33,7 @@ interface Pago {
   styleUrls: ['./prestamos.component.css']
 })
 export class PrestamosComponent implements OnInit {
-  tipoPrestamo = 'PRESTAMO_PERSONAL'; 
+  tipoPrestamo = 'PRESTAMO_PERSONAL';
   monto = 0;
   plazo = 12;
   ingresosMensuales = 0;
@@ -45,7 +45,7 @@ export class PrestamosComponent implements OnInit {
   cuentas: any[] = [];
 
   solicitudSeleccionada: number | null = null;
-  mensaje: string = ''; 
+  mensaje: string = '';
 
   constructor(private http: HttpClient) {}
 
@@ -59,7 +59,7 @@ export class PrestamosComponent implements OnInit {
 
   cargarSolicitudes(idUsuario: number) {
     // 🔽 ¡SOLUCIÓN! URL corregida para apuntar al endpoint correcto
-    this.http.get<Solicitud[]>(`http://localhost:3000/api/prestamos/mis-solicitudes/${idUsuario}`)
+    this.http.get<Solicitud[]>(`/api/prestamos/mis-solicitudes/${idUsuario}`)
       .subscribe({
         next: data => this.solicitudes = data,
         error: err => {
@@ -70,7 +70,7 @@ export class PrestamosComponent implements OnInit {
   }
 
   cargarCuentas(idUsuario: number) {
-    this.http.get<any[]>(`http://localhost:3000/api/consultas/mis-cuentas/${idUsuario}`)
+    this.http.get<any[]>(`/api/consultas/mis-cuentas/${idUsuario}`)
       .subscribe({
         next: data => this.cuentas = data,
         error: err => console.error(' Error al cargar cuentas:', err)
@@ -100,10 +100,10 @@ export class PrestamosComponent implements OnInit {
       idCuenta: this.cuentaSeleccionada,
       montoTotal: this.monto,
       plazo: `${this.plazo} meses`,
-      tipo: this.tipoPrestamo 
+      tipo: this.tipoPrestamo
     };
 
-    this.http.post('http://localhost:3000/api/prestamos/solicitar', payload)
+    this.http.post('/api/prestamos/solicitar', payload)
       .subscribe({
         next: (res: any) => {
           this.mensaje = res.message;
@@ -123,16 +123,16 @@ export class PrestamosComponent implements OnInit {
       this.pagos = [];
       return;
     }
-    
+
     this.solicitudSeleccionada = idSolicitud;
-    
+
     // 🔽 Esta llamada ahora funcionará gracias al backend
-    this.http.get<Pago[]>(`http://localhost:3000/api/prestamos/pagos/${idSolicitud}`)
+    this.http.get<Pago[]>(`/api/prestamos/pagos/${idSolicitud}`)
       .subscribe({
         next: data => this.pagos = data,
         error: err => {
           // Este error ya no debería ser un 404
-          console.error(' Error al obtener pagos:', err); 
+          console.error(' Error al obtener pagos:', err);
           this.mensaje = 'Error al cargar el historial de pagos.';
         }
       });
@@ -145,7 +145,7 @@ export class PrestamosComponent implements OnInit {
 
     const payload = { idSolicitud, monto: this.montoPago };
 
-    this.http.post('http://localhost:3000/api/prestamos/pago', payload)
+    this.http.post('/api/prestamos/pago', payload)
       .subscribe({
         next: (res: any) => {
           alert(res.message);

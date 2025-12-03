@@ -26,27 +26,27 @@ export class DepositosComponent {
     this.error = '';
     this.mensaje = '';
 
-    if (!this.cuentaDestino || !this.monto || this.monto <= 0) { 
-      this.error = 'Debes ingresar una cuenta destino y un monto válido.'; 
-      return; 
+    if (!this.cuentaDestino || !this.monto || this.monto <= 0) {
+      this.error = 'Debes ingresar una cuenta destino y un monto válido.';
+      return;
     }
-    
+
     // 🔽 Payload simplificado. El backend ya esperaba estos campos.
-    const payload = { 
+    const payload = {
       cuentaDestino: this.cuentaDestino,
-      monto: this.monto, 
+      monto: this.monto,
       concepto: this.concepto
     };
 
-    this.http.post('http://localhost:3000/api/transferencias/deposito', payload)
+    this.http.post('/api/transferencias/deposito', payload)
       .subscribe({
         next: (res:any) => {
           this.mensaje = res.message || 'Depósito realizado exitosamente';
           alert('Depósito realizado exitosamente');
           // 🔽 Limpiar campos
-          this.cuentaDestino = ''; 
-          this.monto = 0; 
-          this.concepto = ''; 
+          this.cuentaDestino = '';
+          this.monto = 0;
+          this.concepto = '';
         },
         error: err => {
           this.error = err.error?.error || 'Error en depósito. Verifica la cuenta destino.';
@@ -56,10 +56,10 @@ export class DepositosComponent {
   }
 
   cancelar() {
-    this.cuentaDestino = ''; 
-    this.monto = 0; 
-    this.concepto = ''; 
-    this.error = ''; 
+    this.cuentaDestino = '';
+    this.monto = 0;
+    this.concepto = '';
+    this.error = '';
     this.mensaje = '';
   }
 }

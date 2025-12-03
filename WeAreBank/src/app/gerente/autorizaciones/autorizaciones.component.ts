@@ -44,7 +44,7 @@ export class AutorizacionesComponent implements OnInit {
   }
 
   cargarPendientes(): void {
-    this.http.get<any>('http://localhost:3000/api/ejecutivo/solicitudes-prestamo')
+    this.http.get<any>('/api/ejecutivo/solicitudes-prestamo')
       .subscribe({
         next: (data) => {
           this.autorizacionesPendientes = data.pendientes;
@@ -57,7 +57,7 @@ export class AutorizacionesComponent implements OnInit {
   }
 
   cargarHistorial(): void {
-    this.http.get<any>('http://localhost:3000/api/ejecutivo/solicitudes-prestamo')
+    this.http.get<any>('/api/ejecutivo/solicitudes-prestamo')
       .subscribe({
         next: (data) => {
           this.autorizacionesHistorial = data.historial;
@@ -71,7 +71,7 @@ export class AutorizacionesComponent implements OnInit {
 
   procesarSolicitud(idSolicitud: number, aprobado: boolean): void {
     this.mensaje = 'Procesando...';
-    this.http.post('http://localhost:3000/api/ejecutivo/procesar-prestamo', { idSolicitud, aprobado })
+    this.http.post('/api/ejecutivo/procesar-prestamo', { idSolicitud, aprobado })
       .subscribe({
         next: (res: any) => {
           this.mensaje = res.message || 'Solicitud procesada correctamente.';

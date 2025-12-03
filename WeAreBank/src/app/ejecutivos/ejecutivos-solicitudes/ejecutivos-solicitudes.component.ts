@@ -13,11 +13,11 @@ import { FormsModule } from '@angular/forms'; // Importar FormsModule
 export class EjecutivosSolicitudesComponent implements OnInit {
   pendientes: any[] = []; // Préstamos
   historial: any[] = [];  // Préstamos
-  
+
   // Nueva lista para cierres
   solicitudesCierre: any[] = [];
-  
-  apiUrl = 'http://localhost:3000/api/ejecutivo';
+
+  apiUrl = '/api/ejecutivo';
 
   constructor(private http: HttpClient) {}
 
@@ -62,10 +62,10 @@ export class EjecutivosSolicitudesComponent implements OnInit {
       razon = prompt('Ingrese la razón del rechazo:') || 'Sin razón especificada';
     }
 
-    const body = { 
-      idSolicitudCierre, 
-      aprobado, 
-      razon_rechazo: razon 
+    const body = {
+      idSolicitudCierre,
+      aprobado,
+      razon_rechazo: razon
     };
 
     this.http.post(`${this.apiUrl}/procesar-cierre`, body).subscribe({

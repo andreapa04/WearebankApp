@@ -43,7 +43,7 @@ export class RetirosComponent implements OnInit {
 
   cargarCuentas(idUsuario: number): void {
     this.http
-      .get<Cuenta[]>(`http://localhost:3000/api/consultas/mis-cuentas/${idUsuario}`)
+      .get<Cuenta[]>(`/api/consultas/mis-cuentas/${idUsuario}`)
       .subscribe({
         next: (data) => (this.cuentas = data),
         error: (err) => {
@@ -81,11 +81,11 @@ export class RetirosComponent implements OnInit {
       retiroSinTarjeta: this.retiroSinTarjeta
     };
 
-    this.http.post('http://localhost:3000/api/retiros', retiroData).subscribe({
+    this.http.post('/api/retiros', retiroData).subscribe({
       next: (res: any) => {
         this.mensaje = res.message || ' Operación realizada.';
         this.codigoGenerado = res.codigo || null; // 🔽 Captura el código
-        
+
         // Refrescar saldo
         this.cargarCuentas(JSON.parse(safeLocalStorage().getItem('usuario') || 'null').id);
       },

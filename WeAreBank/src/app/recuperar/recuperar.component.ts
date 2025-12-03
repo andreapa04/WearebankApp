@@ -26,7 +26,7 @@ export class RecuperarComponent {
   buscarUsuario() {
     this.mensajeError = '';
 
-    this.http.post('http://localhost:3000/api/auth/recuperar', { email: this.email })
+    this.http.post('/api/auth/recuperar', { email: this.email })
         .subscribe({
         next: (res: any) => {
             console.log("Respuesta del backend:", res);
@@ -49,7 +49,7 @@ export class RecuperarComponent {
 
   verificarRespuesta() {
     this.mensajeError = '';
-    this.http.post('http://localhost:3000/api/auth/verificar-respuesta', { email: this.email, respuesta: this.respuesta })
+    this.http.post('/api/auth/verificar-respuesta', { email: this.email, respuesta: this.respuesta })
       .subscribe({
         next: () => this.paso = 3,
         error: (err) => this.mensajeError = err.error?.error || "Respuesta incorrecta"
@@ -58,7 +58,7 @@ export class RecuperarComponent {
 
   cambiarContrasenia() {
     this.mensajeError = '';
-    this.http.post('http://localhost:3000/api/auth/reset-password', { email: this.email, nuevaContrasenia: this.nuevaContrasenia })
+    this.http.post('/api/auth/reset-password', { email: this.email, nuevaContrasenia: this.nuevaContrasenia })
       .subscribe({
         next: (res: any) => {
           this.mensajeExito = res.message;
