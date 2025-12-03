@@ -15,7 +15,7 @@ interface UsuarioSesion {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = '/api/auth';
   private usuarioActual: UsuarioSesion | null = null;
   private ls = safeLocalStorage();
 

@@ -40,7 +40,7 @@ export class TransferenciasComponent implements OnInit {
   }
 
   cargarCuentas(idUsuario: number) {
-    this.http.get<any[]>(`http://localhost:3000/api/transferencias/mis-cuentas/${idUsuario}`)
+    this.http.get<any[]>(`/api/transferencias/mis-cuentas/${idUsuario}`)
       .subscribe({
         next: res => this.cuentas = res,
         error: err => this.error = err.error?.error || 'Error al cargar cuentas'
@@ -80,7 +80,7 @@ export class TransferenciasComponent implements OnInit {
         tipo: 'INTERNA'
       };
 
-      this.http.post('http://localhost:3000/api/transferencias', payload).subscribe({
+      this.http.post('/api/transferencias', payload).subscribe({
         next: (res: any) => {
           this.mensaje = res.message || 'Transferencia interna realizada';
           alert('Transferencia realizada exitosamente');
@@ -102,7 +102,7 @@ export class TransferenciasComponent implements OnInit {
         tipo: 'EXTERNA'
       };
 
-      this.http.post('http://localhost:3000/api/transferencias', payload).subscribe({
+      this.http.post('/api/transferencias', payload).subscribe({
         next: (res: any) => {
           this.mensaje = res.message || 'Transferencia externa realizada';
           alert('Transferencia realizada exitosamente');

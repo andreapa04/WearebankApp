@@ -47,7 +47,7 @@ export class EjecutivosCuentasComponent implements OnInit {
 
   // 🔽 2. Inyectar AuthService y hacerlo PÚBLICO
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     public authService: AuthService // Poner 'public'
   ) {}
 
@@ -56,7 +56,7 @@ export class EjecutivosCuentasComponent implements OnInit {
   }
 
   cargarCartera(): void {
-    this.http.get<CarteraCuenta[]>('http://localhost:3000/api/ejecutivo/cartera-cuentas')
+    this.http.get<CarteraCuenta[]>('/api/ejecutivo/cartera-cuentas')
       .subscribe({
         next: (data) => this.cartera = data,
         error: (err: any) => console.error('Error al cargar cartera', err)
@@ -78,7 +78,7 @@ export class EjecutivosCuentasComponent implements OnInit {
     if (!confirm('¿Estás seguro de que deseas CERRAR esta cuenta? Esta acción no se puede deshacer.')) {
       return;
     }
-    this.http.delete(`http://localhost:3000/api/ejecutivo/eliminar-cuenta/${idCuenta}`)
+    this.http.delete(`/api/ejecutivo/eliminar-cuenta/${idCuenta}`)
       .subscribe({
         next: () => {
           this.mensaje = 'Cuenta eliminada exitosamente.';

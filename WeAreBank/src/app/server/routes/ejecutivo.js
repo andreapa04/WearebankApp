@@ -33,7 +33,7 @@ router.get("/stats", async (req, res) => {
 router.get("/cartera-cuentas", async (req, res) => {
   try {
     const [cartera] = await pool.query(`
-      SELECT 
+      SELECT
         c.idCuenta, c.clabe, c.tipoCuenta, c.saldo,
         u.idUsuario, u.nombre, u.apellidoP, u.apellidoM, u.email,
         u.telefono, u.direccion, u.RFC, u.CURP
@@ -64,9 +64,9 @@ router.delete("/eliminar-cuenta/:idCuenta", async (req, res) => {
 
     // 1. Obtener el idUsuario, email y nombre
     const [perteneceRows] = await connection.query(
-      `SELECT p.idUsuario, u.email, u.nombre 
+      `SELECT p.idUsuario, u.email, u.nombre
        FROM pertenece p
-       JOIN usuario u ON p.idUsuario = u.idUsuario 
+       JOIN usuario u ON p.idUsuario = u.idUsuario
        WHERE p.idCuenta = ?`,
       [idCuenta]
     );
@@ -78,10 +78,10 @@ router.delete("/eliminar-cuenta/:idCuenta", async (req, res) => {
     // 2. Validar que no tenga préstamos o créditos activos (APROBADA)
     // ⚠️ CAMBIO: Si el estado es FINALIZADO, RECHAZADA o PAGADO, no cuenta como activo. Solo APROBADA bloquea el cierre.
     const [solicitudRows] = await connection.query(
-      `SELECT COUNT(*) AS activos 
+      `SELECT COUNT(*) AS activos
        FROM solicitud s
        JOIN pertenece p ON s.idCuenta = p.idCuenta
-       WHERE p.idUsuario = ? AND s.estado = 'APROBADA'`, 
+       WHERE p.idUsuario = ? AND s.estado = 'APROBADA'`,
       [idUsuario]
     );
 
@@ -124,7 +124,7 @@ router.delete("/eliminar-cuenta/:idCuenta", async (req, res) => {
 router.get("/solicitudes-prestamo", async (req, res) => {
   try {
     const [pendientes] = await pool.query(
-      `SELECT s.*, u.nombre, u.apellidoP, u.email, b.puntaje 
+      `SELECT s.*, u.nombre, u.apellidoP, u.email, b.puntaje
        FROM solicitud s
        JOIN cuenta c ON s.idCuenta = c.idCuenta
        JOIN pertenece p ON c.idCuenta = p.idCuenta
@@ -135,7 +135,7 @@ router.get("/solicitudes-prestamo", async (req, res) => {
     );
 
     const [historial] = await pool.query(
-      `SELECT s.*, u.nombre, u.apellidoP, u.email 
+      `SELECT s.*, u.nombre, u.apellidoP, u.email
        FROM solicitud s
        JOIN cuenta c ON s.idCuenta = c.idCuenta
        JOIN pertenece p ON c.idCuenta = p.idCuenta
@@ -168,7 +168,7 @@ router.post("/procesar-prestamo", async (req, res) => {
 
     const [rows] = await connection.query("SELECT * FROM solicitud WHERE idSolicitud = ?", [idSolicitud]);
     if (rows.length === 0) throw new Error("Solicitud no encontrada");
-    
+
     const solicitud = rows[0];
     if (solicitud.estado !== "EN_REVISION")
       throw new Error("La solicitud ya fue procesada");
@@ -205,7 +205,7 @@ router.post("/procesar-prestamo", async (req, res) => {
           // Ya tiene tarjeta: Aumentar el límite
           const tarjetaExistente = tarjetas[0];
           const nuevoLimite = parseFloat(tarjetaExistente.limiteCredito) + parseFloat(solicitud.montoTotal);
-          
+
           await connection.query(
             "UPDATE tarjeta SET limiteCredito = ? WHERE idTarjeta = ?",
             [nuevoLimite, tarjetaExistente.idTarjeta]
@@ -294,7 +294,7 @@ router.post("/procesar-cierre", async (req, res) => {
     if (aprobado) {
       // 2. Validar que no tenga préstamos o créditos activos (APROBADA)
       const [solicitudRows] = await connection.query(
-        `SELECT COUNT(*) AS activos 
+        `SELECT COUNT(*) AS activos
          FROM solicitud s
          JOIN pertenece p ON s.idCuenta = p.idCuenta
          WHERE p.idUsuario = ? AND s.estado = 'APROBADA'`,
@@ -315,23 +315,23 @@ router.post("/procesar-cierre", async (req, res) => {
         "UPDATE usuario SET estatus = 'INACTIVO' WHERE idUsuario = ?",
         [idUsuario]
       );
-      
+
       // 4. Actualizar la solicitud de cierre
       await connection.query(
         "UPDATE solicitud_cierre SET estado = 'APROBADA', idEjecutivo = ? WHERE idSolicitudCierre = ?",
         [idEjecutivo, idSolicitudCierre]
       );
-      
+
       // 5. Obtener datos para correo
       const [userRows] = await connection.query("SELECT nombre, email FROM usuario WHERE idUsuario = ?", [idUsuario]);
       const { nombre, email } = userRows[0];
-      
+
       await connection.commit();
       connection.release();
 
       // 6. Enviar correo
       await enviarCorreoCierreCuenta(email, nombre);
-      
+
       res.json({ message: "Solicitud de cierre aprobada. El usuario ha sido desactivado." });
 
     } else {
@@ -339,12 +339,12 @@ router.post("/procesar-cierre", async (req, res) => {
       if (!razon_rechazo) {
         return res.status(400).json({ message: "Se requiere una razón para el rechazo." });
       }
-      
+
       await connection.query(
         "UPDATE solicitud_cierre SET estado = 'RECHAZADA', idEjecutivo = ?, razon_rechazo = ? WHERE idSolicitudCierre = ?",
         [idEjecutivo, razon_rechazo, idSolicitudCierre]
       );
-      
+
       await connection.commit();
       connection.release();
       res.json({ message: "Solicitud de cierre rechazada." });
@@ -366,7 +366,7 @@ router.post("/procesar-cierre", async (req, res) => {
 router.get("/clientes-consulta", async (req, res) => {
   try {
     const [clientes] = await pool.query(
-      `SELECT idUsuario, nombre, apellidoP, apellidoM, email, telefono, RFC, CURP, direccion 
+      `SELECT idUsuario, nombre, apellidoP, apellidoM, email, telefono, RFC, CURP, direccion
        FROM usuario WHERE idRol = 3
        ORDER BY apellidoP, nombre`
     );
@@ -423,7 +423,7 @@ router.put("/cliente-detalle/:idUsuario", async (req, res) => {
 
   try {
     const [result] = await pool.query(
-      `UPDATE usuario 
+      `UPDATE usuario
        SET nombre = ?, apellidoP = ?, apellidoM = ?, direccion = ?, telefono = ?, email = ?
        WHERE idUsuario = ? AND idRol = 3`,
       [nombre, apellidoP, apellidoM, direccion, telefono, email, idUsuario]
@@ -435,7 +435,7 @@ router.put("/cliente-detalle/:idUsuario", async (req, res) => {
 
     // Auditoría
     await pool.query(
-      `INSERT INTO Auditoria (idUsuarioResponsable, tipoEvento, descripcion, idEntidadAfectada, tablaAfectada) 
+      `INSERT INTO Auditoria (idUsuarioResponsable, tipoEvento, descripcion, idEntidadAfectada, tablaAfectada)
        VALUES (2, 'MODIFICACION_CLIENTE', ?, ?, 'usuario')`, // ID ejecutivo hardcodeado a 2 por ahora
       [`Ejecutivo modificó datos del cliente ID: ${idUsuario}`, idUsuario]
     );

@@ -24,13 +24,13 @@ interface Ejecutivo {
   styleUrl: './gestion-permisos.component.css'
 })
 export class GestionPermisosComponent implements OnInit {
-  
+
   ejecutivos: Ejecutivo[] = [];
   catalogoPermisos: Permiso[] = [];
-  
+
   ejecutivoSeleccionado: Ejecutivo | null = null;
   permisosDelEjecutivo: { [idPermiso: number]: boolean } = {};
-  
+
   mensaje: string = '';
   error: string = '';
   cargando: boolean = false;
@@ -46,7 +46,7 @@ export class GestionPermisosComponent implements OnInit {
     this.limpiarMensajes();
 
     // 1. Cargar lista de ejecutivos
-    this.http.get<Ejecutivo[]>('http://localhost:3000/api/gerente/ejecutivos')
+    this.http.get<Ejecutivo[]>('/api/gerente/ejecutivos')
       .subscribe({
         next: (data) => {
           this.ejecutivos = data;
@@ -55,7 +55,7 @@ export class GestionPermisosComponent implements OnInit {
       });
 
     // 2. Cargar catálogo maestro de permisos
-    this.http.get<Permiso[]>('http://localhost:3000/api/gerente/permisos/catalogo')
+    this.http.get<Permiso[]>('/api/gerente/permisos/catalogo')
       .subscribe({
         next: (data) => {
           this.catalogoPermisos = data;
@@ -75,7 +75,7 @@ export class GestionPermisosComponent implements OnInit {
     this.permisosDelEjecutivo = {};
 
     // Cargar los permisos específicos de ESE ejecutivo
-    this.http.get<number[]>(`http://localhost:3000/api/gerente/permisos/ejecutivo/${ejecutivo.idUsuario}`)
+    this.http.get<number[]>(`/api/gerente/permisos/ejecutivo/${ejecutivo.idUsuario}`)
       .subscribe({
         next: (permisosActuales) => {
           // Poblar los checkboxes
@@ -93,7 +93,7 @@ export class GestionPermisosComponent implements OnInit {
 
   guardarCambios(): void {
     if (!this.ejecutivoSeleccionado) return;
-    
+
     this.limpiarMensajes();
     this.cargando = true;
 
@@ -107,7 +107,7 @@ export class GestionPermisosComponent implements OnInit {
 
     // Enviar la lista de IDs al endpoint específico del usuario
     this.http.put(
-      `http://localhost:3000/api/gerente/permisos/ejecutivo/${this.ejecutivoSeleccionado.idUsuario}`, 
+      `/api/gerente/permisos/ejecutivo/${this.ejecutivoSeleccionado.idUsuario}`,
       { permisos: idsPermisosAEnviar }
     ).subscribe({
         next: (res: any) => {

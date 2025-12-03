@@ -47,7 +47,7 @@ export class CreditosComponent implements OnInit {
 
     // Cargar cuentas
     this.http
-      .get<Cuenta[]>(`http://localhost:3000/api/consultas/mis-cuentas/${usuario.id}`)
+      .get<Cuenta[]>(`/api/consultas/mis-cuentas/${usuario.id}`)
       .subscribe({
         next: (data) => (this.cuentas = data),
         error: (err) => console.error('Error al cargar cuentas', err)
@@ -55,7 +55,7 @@ export class CreditosComponent implements OnInit {
 
     // Cargar solicitudes previas
     this.http
-      .get<Solicitud[]>(`http://localhost:3000/api/creditos/mis-solicitudes/${usuario.id}`)
+      .get<Solicitud[]>(`/api/creditos/mis-solicitudes/${usuario.id}`)
       .subscribe({
         next: (data) => (this.solicitudes = data),
         error: (err) => console.error('Error al cargar solicitudes', err)
@@ -75,7 +75,7 @@ export class CreditosComponent implements OnInit {
       tipo: this.tipo
     };
 
-    this.http.post('http://localhost:3000/api/creditos/solicitar', data)
+    this.http.post('/api/creditos/solicitar', data)
       .subscribe({
         next: (res: any) => {
           this.mensaje = res.message;

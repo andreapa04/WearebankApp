@@ -25,8 +25,8 @@ export class EjecutivosHomeComponent implements OnInit {
   ngOnInit(): void {
     const usuario = JSON.parse(safeLocalStorage().getItem('usuario') || '{}');
     this.nombreEjecutivo = usuario.nombre || 'Ejecutivo';
-    
-    this.http.get<Stats>('http://localhost:3000/api/ejecutivo/stats')
+
+    this.http.get<Stats>('/api/ejecutivo/stats')
       .subscribe({
         next: (data) => this.stats = data,
         error: (err) => console.error('Error al cargar estadísticas', err)

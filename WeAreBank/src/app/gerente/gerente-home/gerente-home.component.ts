@@ -20,15 +20,15 @@ interface Ejecutivo {
   styleUrls: ['./gerente-home.component.css']
 })
 export class GerenteHomeComponent implements OnInit {
-  
+
   // Listas de datos
   ejecutivos: Ejecutivo[] = [];
   solicitudesCierre: any[] = []; // Nueva lista para las solicitudes de cierre
-  
+
   // Mensajes de feedback
   mensaje: string = '';
   error: string = '';
-  
+
   // Formulario para registrar nuevo ejecutivo
   formEjecutivo = {
     nombre: '',
@@ -47,7 +47,7 @@ export class GerenteHomeComponent implements OnInit {
   };
 
   // URL base del API para gerente (usamos las rutas que agregamos a gerente.js)
-  private apiUrl = 'http://localhost:3000/api/gerente';
+  private apiUrl = '/api/gerente';
 
   constructor(private http: HttpClient) {}
 
@@ -131,13 +131,13 @@ export class GerenteHomeComponent implements OnInit {
     }
 
     const body = { idSolicitudCierre, aprobado, razon_rechazo: razon };
-    
+
     this.http.post(`${this.apiUrl}/procesar-cierre`, body)
       .subscribe({
         next: (res: any) => {
           this.mensaje = res.message;
           this.cargarSolicitudesCierre(); // Recargar lista
-          
+
           // Limpiar mensaje después de 5 segundos
           setTimeout(() => this.mensaje = '', 5000);
         },

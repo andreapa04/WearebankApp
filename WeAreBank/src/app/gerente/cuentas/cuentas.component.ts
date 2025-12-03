@@ -39,13 +39,13 @@ export class CuentasComponent implements OnInit {
     telefono: '', email: '', contrasenia: '', fechaNacimiento: '',
     CURP: '', RFC: '', INE: '', preguntaSeguridad: '¿Cuál es tu comida favorita?', respuestaSeguridad: ''
   };
-  
+
   mensajeExito: string = '';
   error: string = '';
   clienteEnEdicion: CarteraCuenta | null = null;
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     public authService: AuthService
   ) {}
 
@@ -61,7 +61,7 @@ export class CuentasComponent implements OnInit {
   cargarCartera(): void {
     this.limpiarMensajes();
     // Usa el mismo endpoint que ejecutivo, trae toda la data necesaria
-    this.http.get<CarteraCuenta[]>('http://localhost:3000/api/ejecutivo/cartera-cuentas')
+    this.http.get<CarteraCuenta[]>('/api/ejecutivo/cartera-cuentas')
       .subscribe({
         next: (data) => this.cartera = data,
         error: (err: any) => this.error = 'Error al cargar cartera'
@@ -85,8 +85,8 @@ export class CuentasComponent implements OnInit {
     if (!confirm('¿Estás seguro de que deseas CERRAR esta cuenta? Esta acción no se puede deshacer.')) {
       return;
     }
-    
-    this.http.delete(`http://localhost:3000/api/ejecutivo/eliminar-cuenta/${idCuenta}`)
+
+    this.http.delete(`/api/ejecutivo/eliminar-cuenta/${idCuenta}`)
       .subscribe({
         next: () => {
           this.mensajeExito = 'Cuenta eliminada y usuario desactivado exitosamente.';
@@ -99,11 +99,11 @@ export class CuentasComponent implements OnInit {
   agregarCliente(): void {
     this.limpiarMensajes();
     this.mensajeExito = 'Procesando...';
-    
+
     this.authService.register(this.formCliente).subscribe({
       next: (res: any) => {
         this.mensajeExito = 'Cliente y cuenta creados exitosamente.';
-        this.formCliente = { 
+        this.formCliente = {
           nombre: '', apellidoP: '', apellidoM: '', direccion: '', telefono: '',
           email: '', contrasenia: '', fechaNacimiento: '', CURP: '', RFC: '',
           INE: '', preguntaSeguridad: '¿Cuál es tu comida favorita?', respuestaSeguridad: ''
@@ -133,8 +133,8 @@ export class CuentasComponent implements OnInit {
     this.limpiarMensajes();
 
     const idUsuario = this.clienteEnEdicion.idUsuario;
-    
-    this.http.put(`http://localhost:3000/api/gerente/cliente-detalle/${idUsuario}`, this.clienteEnEdicion)
+
+    this.http.put(`/api/gerente/cliente-detalle/${idUsuario}`, this.clienteEnEdicion)
       .subscribe({
         next: (res: any) => {
           this.mensajeExito = res.message || 'Cliente actualizado';
@@ -150,8 +150,8 @@ export class CuentasComponent implements OnInit {
   // --- NUEVA FUNCIÓN: Descargar PDF ---
   descargarPDF(clabe: string): void {
     if (!clabe) return;
-    
-    this.http.get(`http://localhost:3000/api/consultas/estado-cuenta-pdf/${clabe}`, { responseType: 'blob' })
+
+    this.http.get(`/api/consultas/estado-cuenta-pdf/${clabe}`, { responseType: 'blob' })
       .subscribe({
         next: (blob: Blob) => {
           const url = window.URL.createObjectURL(blob);

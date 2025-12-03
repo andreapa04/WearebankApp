@@ -38,11 +38,11 @@ interface Movimiento {
 export class EjecutivosConsultasComponent implements OnInit {
   clientes: Cliente[] = [];
   filtro: string = '';
-  
+
   clienteSeleccionado: Cliente | null = null;
   cuentasCliente: Cuenta[] = [];
   movimientosCliente: Movimiento[] = [];
-  
+
   cargandoDetalle: boolean = false;
 
   // 🔽 --- Nuevas propiedades para edición --- 🔽
@@ -57,7 +57,7 @@ export class EjecutivosConsultasComponent implements OnInit {
 
   ngOnInit(): void {
     // 🔽 Usamos la ruta actualizada que trae la dirección
-    this.http.get<Cliente[]>('http://localhost:3000/api/ejecutivo/clientes-consulta')
+    this.http.get<Cliente[]>('/api/ejecutivo/clientes-consulta')
       .subscribe({
         next: (data: Cliente[]) => this.clientes = data,
         error: (err: any) => console.error('Error al cargar clientes', err)
@@ -91,13 +91,13 @@ export class EjecutivosConsultasComponent implements OnInit {
       this.movimientosCliente = [];
       return;
     }
-    
+
     this.clienteSeleccionado = cliente;
     this.cargandoDetalle = true;
     this.cuentasCliente = [];
     this.movimientosCliente = [];
 
-    this.http.get<any>(`http://localhost:3000/api/ejecutivo/cliente-detalle/${cliente.idUsuario}`)
+    this.http.get<any>(`/api/ejecutivo/cliente-detalle/${cliente.idUsuario}`)
       .subscribe({
         next: (data: any) => {
           this.cuentasCliente = data.cuentas;
@@ -121,7 +121,7 @@ export class EjecutivosConsultasComponent implements OnInit {
 
     if (!clabe) return;
 
-    this.http.get(`http://localhost:3000/api/consultas/estado-cuenta-pdf/${clabe}`, { responseType: 'blob' })
+    this.http.get(`/api/consultas/estado-cuenta-pdf/${clabe}`, { responseType: 'blob' })
       .subscribe({
         next: (blob: Blob) => {
           const url = window.URL.createObjectURL(blob);
@@ -134,7 +134,7 @@ export class EjecutivosConsultasComponent implements OnInit {
         error: (err: any) => alert('Error al generar el PDF. Es posible que la cuenta no tenga movimientos.')
       });
   }
-  
+
   // 🔽 --- FUNCIONES DE EDICIÓN MODIFICADAS/AÑADIDAS --- 🔽
 
   modificarCliente(cliente: Cliente): void {
@@ -159,13 +159,13 @@ export class EjecutivosConsultasComponent implements OnInit {
       return;
     }
     this.limpiarMensajes();
-    
+
     // Usamos el endpoint de EJECUTIVO
-    this.http.put(`http://localhost:3000/api/ejecutivo/cliente-detalle/${this.clienteEnEdicion.idUsuario}`, this.clienteEnEdicion)
+    this.http.put(`/api/ejecutivo/cliente-detalle/${this.clienteEnEdicion.idUsuario}`, this.clienteEnEdicion)
       .subscribe({
         next: (res: any) => {
           this.mensajeExito = res.message || 'Cliente actualizado';
-          
+
           // 🔽 FIX: Usar '!' (non-null assertion) o el guard de arriba ya protege
           const idUsuarioEditado = this.clienteEnEdicion!.idUsuario;
 
@@ -175,13 +175,13 @@ export class EjecutivosConsultasComponent implements OnInit {
             // 🔽 FIX: Usar Object.assign para clonar
             this.clientes[index] = Object.assign({}, this.clienteEnEdicion!);
           }
-          
+
           // Actualizar el cliente seleccionado
           if (this.clienteSeleccionado?.idUsuario === idUsuarioEditado) {
             // 🔽 FIX: Usar Object.assign para clonar
             this.clienteSeleccionado = Object.assign({}, this.clienteEnEdicion!);
           }
-          
+
           this.clienteEnEdicion = null;
         },
         error: (err: any) => {
